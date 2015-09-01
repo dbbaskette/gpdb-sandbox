@@ -1,0 +1,84 @@
+{
+  "variables": {
+    "iso_url": "http://dist.eng.pivotal.io/dist/iso/os/centos/iso/CentOS-6.5-x86_64-bin-DVD1.iso",
+    "iso_checksum": "83221db52687c7b857e65bfe60787838",
+    "headless": "false"
+  },
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "vm_name": "PivotalGPDB-Sandbox-Centos-6.5-x86_64",
+      "disk_size": 20480,
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "8192" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "2" ],
+        [ "modifyvm", "{{.Name}}", "--natpf1", "guest_http,tcp,,10000,,8080" ],
+        [ "modifyvm", "{{.Name}}", "--natpf1", "guest_ssh,tcp,,2200,,22" ]
+      ],
+
+      "headless": "{{user `headless`}}",
+      "guest_os_type": "RedHat_64",
+      "format": "ova",
+
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "md5",
+
+      "ssh_username": "pivotal",
+      "ssh_password": "pivotal",
+      "ssh_port": 22,
+      "ssh_pty": "true",
+      "ssh_wait_timeout": "10000s",
+
+      "http_directory": "http",
+      "boot_wait": "10s",
+      "boot_command": [
+        "<tab> text ksdevice=eth0 ip=dhcp ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter>"
+      ],
+
+      "shutdown_command": "echo 'pivotal'|sudo -S /sbin/halt -h -p"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "environment_vars": [],
+      "execute_command": "echo 'pivotal' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "environment_vars": [
+        # ANY ENV VARE
+      ],
+      "scripts": [
+        "scripts/init"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "./release-sandbox.properties",
+      #"destination": "{{user `ambari_deploy_home`}}/release.properties"
+    },
+    {
+      "type": "file",
+      "source": "../ambari_deploy/src/bin/",
+      "destination": "{{user `ambari_deploy_home`}}/ambari-deploy/"
+    },
+    {
+      "type": "file",
+      "source": "/Stacks/",
+      #"destination": "{{user `ambari_deploy_home`}}/artifacts/"
+    },
+    {
+      "type": "shell",
+      "environment_vars": [],
+      "execute_command": "echo 'pivotal' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "environment_vars": [
+        #"CUSTOM_CLUSTER_NAME={{user `ambari_cluster_name`}}",
+        #"AMBARI_DEPLOY_HOME={{user `ambari_deploy_home`}}",
+        #"BLUEPRINT_NAME={{user `blueprint_name`}}"
+      ],
+      "scripts": [
+        #"scripts/singlenode-setup",
+        #"scripts/cleanup.sh"
+      ]
+    }
+  ]
+}
