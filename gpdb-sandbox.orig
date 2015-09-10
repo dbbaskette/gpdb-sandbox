@@ -24,7 +24,7 @@
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "md5",
 
-      "ssh_username": "gpadmin",
+      "ssh_username": "pivotal",
       "ssh_password": "pivotal",
       "ssh_port": 22,
       "ssh_pty": "true",
@@ -39,42 +39,46 @@
       "shutdown_command": "echo 'pivotal'|sudo -S /sbin/halt -h -p"
     }
   ],
- "provisioners": [ 
-	{ 
-      		"type": "file",
-      		"source": "bins",
-      		"destination": "/tmp"
-   	},
-        {
-                "type": "file",
-                "source": "release.properties",
-                "destination": "/tmp/release.properties"
-        },
-        {
-                "type": "file",
-                "source": "configs",
-                "destination": "/tmp"
-        },
-	{
-		"type": "shell",
-		"execute_command": "echo 'pivotal' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
-		"script": "scripts/systemConfig.sh"
-	},
-	{
-		"type": "shell",
-		"scripts": [
-        		"scripts/installGPDB.sh",
-        		"scripts/installExtensions.sh",
-        		"scripts/installGPCC.sh"
-      		]
-	},
-	{
-		"type": "shell",
-		"execute_command": "echo 'pivotal' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
-		"scripts": [
-        		"scripts/configureGPDB.sh",
-			"scripts/cleanup.sh"
-		]
-	}
- ]
+  "provisioners": [
+    {
+      "type": "shell",
+      "environment_vars": [],
+      "execute_command": "echo 'pivotal' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "environment_vars": [
+        # ANY ENV VARE
+      ],
+      "scripts": [
+        "scripts/init"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "./release-sandbox.properties",
+      #"destination": "{{user `ambari_deploy_home`}}/release.properties"
+    },
+    {
+      "type": "file",
+      "source": "../ambari_deploy/src/bin/",
+      "destination": "{{user `ambari_deploy_home`}}/ambari-deploy/"
+    },
+    {
+      "type": "file",
+      "source": "/Stacks/",
+      #"destination": "{{user `ambari_deploy_home`}}/artifacts/"
+    },
+    {
+      "type": "shell",
+      "environment_vars": [],
+      "execute_command": "echo 'pivotal' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "environment_vars": [
+        #"CUSTOM_CLUSTER_NAME={{user `ambari_cluster_name`}}",
+        #"AMBARI_DEPLOY_HOME={{user `ambari_deploy_home`}}",
+        #"BLUEPRINT_NAME={{user `blueprint_name`}}"
+      ],
+      "scripts": [
+        #"scripts/singlenode-setup",
+        #"scripts/cleanup.sh"
+      ]
+    }
+  ]
 }
