@@ -79,7 +79,7 @@ cat > "\$hostsfile" <<HOSTS
 HOSTS
 
 sed -i "/^IP:/ s/$/ \$ip/" /etc/issue
-sed -i "s/###/\$ip/g" /etc/issue
+#sed -i "s/@@@/\$ip/g" /etc/issue
 
 EOF
 
@@ -89,8 +89,16 @@ EOF
 setup_message(){
 
 cat > /etc/issue  << 'EOF'
+                                     ##                             
+  ###                                 #                  ####  #### 
+ #    ## ##  ###   ###  ####   ###    #   # ## #####      # #   # # 
+## #   ## # ##### #####  # ##  # ##   #   # #  # # ##    #  #  ###  
+## #   #    ##    ##     # #   # #   ##  ## #  # # #     # ##  # ## 
+ ###  ###    ###   ###  ## ##  ##   ####  #### # # #    ####  ####  
+                              ###     
 ----------------------------------------------------------------------------
 Welcome to the Pivotal Greenplum Database - Data Science Sandbox with MADLIB
+			 Version:
 ----------------------------------------------------------------------------
 Hostname: \n
 IP:
@@ -98,11 +106,12 @@ Username: root
 Password: pivotal
 GPDB Admin: gpadmin
 GPDB Password: pivotal
+
 ----------------------------------------------------------------------------
-                To Run Demos/Tutorials
+                To Start Database, Command Center, and Apache Zeppelin
 ----------------------------------------------------------------------------
-1)  Login as root
-2)  Type: demos.sh
+1)  Login as gpadmin
+2)  Type: ./start_all.sh
 ----------------------------------------------------------------------------
 EOF
 }

@@ -1,5 +1,5 @@
 ######################
-# GPDB CONFIG PARAMS #
+# HAWQ CONFIG PARAMS #
 ######################
 
 * soft nofile 65536

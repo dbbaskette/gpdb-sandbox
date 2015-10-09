@@ -1,13 +1,13 @@
 {
   "variables": {
-    "iso_url": "http://dist.eng.pivotal.io/dist/iso/os/centos/iso/CentOS-6.5-x86_64-bin-DVD1.iso",
-    "iso_checksum": "83221db52687c7b857e65bfe60787838",
+    "iso_url": "http://mirrors.adams.net/centos/6.7/isos/x86_64/CentOS-6.7-x86_64-bin-DVD1.iso",
+    "iso_checksum": "51f90e8ddd2ea199780065eaf75130ad",
     "headless": "false"
   },
   "builders": [
     {
       "type": "virtualbox-iso",
-      "vm_name": "PivotalGPDB-Sandbox-Centos-6.5-x86_64",
+      "vm_name": "PivotalGPDB-Sandbox-Centos-6.7-x86_64",
       "disk_size": 20480,
       "vboxmanage": [
         [ "modifyvm", "{{.Name}}", "--memory", "8192" ],
@@ -73,6 +73,7 @@
 		"execute_command": "echo 'pivotal' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
 		"scripts": [
         		"scripts/configureGPDB.sh",
+        		"scripts/installZeppelin.sh",
 			"scripts/cleanup.sh"
 		]
 	}
