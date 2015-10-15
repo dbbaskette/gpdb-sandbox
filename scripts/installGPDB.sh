@@ -9,9 +9,12 @@ install_gpdb(){
  /usr/local/greenplum-db/bin/gpssh-exkeys -f /usr/local/greenplum-db/hostsfile
  gpinitsystem -a -c  /tmp/configs/gpinitsystem_singlenode -h /usr/local/greenplum-db/hostsfile
  echo "INSTALLED"
-# gpstart -a
+ # gpstart -a
  createdb gpadmin
  #gpstop -M smart
+}
+tutorial_repo(){
+        git clone --depth=1 https://github.com/Pivotal-Open-Source-Hub/gpdb-sandbox-tutorials.git
 }
 
 
@@ -19,6 +22,7 @@ install_gpdb(){
 
 _main() {
 	install_gpdb
+	tutorial_repo
 
 }
 

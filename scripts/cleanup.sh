@@ -19,32 +19,80 @@ echo "host all all 0.0.0.0/0 trust" >> /gpdata/segments/gpseg0/pg_hba.conf
 #rm -rf /tmp/configs
 #rm -rf /tmp/bins
 
-# BUILD STARTUP SCRIPTS
-ip=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+# BUILD START/STOP SCRIPTS
 cat > /home/gpadmin/start_all.sh << EOF
+echo "********************************************************************************************"
+echo "* This script starts the Greenplum Database, Greenplum Control Center, and Apache Zeppelin *"
+echo "********************************************************************************************"
+echo "* Starting Greenplum Database..."
+ip=\$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print \$1}')
 source /usr/local/greenplum-db/greenplum_path.sh
 source /usr/local/greenplum-cc-web/gpcc_path.sh
 export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
 gpstart -a
+echo "* Greenplum Database Started."
+echo "* Starting Greenplum Command Center..."
 gpcmdr --start
+echo "* Greenplum Command Center Started."
+echo "* Staring Apache Zeppelin Server...."
 sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
-echo;echo
-echo "**********************************************************"
+echo "* Apache Zepeelin Server Started."
+echo "********************************************************************************************"
+echo "* Updating Tutorial Files..."
+cd ~/gpdb-sandbox-tutorials;git pull > /dev/null 2>&1;cd
+echo "* Tutorials Updated."
+echo "********************************************************************************************"
 echo " Pivotal Greenplum Database Started on port 5432        "
 echo " Pivotal Greenplum Command Center started on port 28080 "
-echo "		http://$ip:28080			       "
+echo "		http://\$ip:28080			       "
 echo "		Username: gpmon 			       "                    
 echo " 		Password: gpmon				       "
 echo " Apache Zeppelin started on port 8080		       "
-echo "		http://$IP:8080				       "
-echo "**********************************************************"
+echo "		http://\$ip:8080				       "
+echo "********************************************************************************************"
 echo;echo
 EOF
+
+cat > /home/gpadmin/stop_all.sh << EOF
+
+echo "********************************************************************************************"
+echo "* This script stops the Greenplum Database, Greenplum Control Center, and Apache Zeppelin *"
+echo "********************************************************************************************"
+echo "* Stopping Greenplum Database..."
+source /usr/local/greenplum-db/greenplum_path.sh
+source /usr/local/greenplum-cc-web/gpcc_path.sh
+export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
+gpstop -M immediate -a
+echo "* Greenplum Database Stopped."
+echo "* Stoppin Greenplum Command Center..."
+gpcmdr --stop
+echo "* Greenplum Command Center Stopped."
+echo "* Stopping Apache Zeppelin Server...."
+sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh stop
+echo "* Apache Zepeelin Server Stopped."
+echo "********************************************************************************************"
+echo " ALL DATABASE RELATED SERVICES STOPPED.    RUN ./start_all.sh to restart"
+echo "********************************************************************************************"
+echo;
+EOF
+
+
+
+
+
 chown gpadmin: /home/gpadmin/start_all.sh
 chmod +x /home/gpadmin/start_all.sh
+chown gpadmin: /home/gpadmin/stop_all.sh
+chmod +x /home/gpadmin/stop_all.sh
 #clean up hostsfile
 sed '$d' /etc/hosts
 
+# CLEAN UP
+rm -f /home/gpadmin/VBoxGuestAdditions.iso
+rm -rf /tmp/bins
+rm -rf /tmp/configs
+
 # Defragment the blocks or else the generated VM image will still be huge
+
 dd if=/dev/zero of=/bigemptyfile bs=4096k
 rm -rf /bigemptyfile

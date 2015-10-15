@@ -14,7 +14,6 @@ EOF
 }
 
 
-
 _main() {
 	configure_gpdb
 

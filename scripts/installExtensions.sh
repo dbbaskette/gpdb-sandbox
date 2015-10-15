@@ -17,8 +17,10 @@ install_madlib(){
  gppkg -i $PLPERL_VERSION.gppkg
  createlang plperl -d gpadmin
  gppkg -i $PLJAVA_VERSION.gppkg
+ gpstop -u
  psql -d gpadmin -f $GPHOME/share/postgresql/pljava/install.sql
  gppkg -i $POSTGIS_VERSION.gppkg
+ gpstop -u
  psql -d gpadmin -f $GPHOME/share/postgresql/contrib/postgis-2.0/postgis.sql
 }
 
