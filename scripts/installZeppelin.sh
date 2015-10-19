@@ -15,7 +15,7 @@ rm -f $ZEPPELIN_VERSION.tar.gz
 #/usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
 #EOF
 #chmod +x /etc/rc.d/rc.local
-cp /tmp/bins/notebook.tar.gz /usr/local/$ZEPPELIN_VERSION/notebook
+cp /tmp/configs/notebook.tar.gz /usr/local/$ZEPPELIN_VERSION/notebook
 cd /usr/local/$ZEPPELIN_VERSION/notebook
 tar xvfz notebook.tar.gz
 }

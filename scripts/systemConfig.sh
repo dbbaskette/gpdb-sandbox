@@ -51,11 +51,6 @@ do
                                 echo "POSTGIS_FILE=$post" >> /tmp/release.properties
                                 echo "POSTGIS_VERSION=$shortname" >> /tmp/release.properties
 				;;
-                *notebook*)     note=$justfile
-        			strip_ext $justfile
-                                echo "NOTEBOOK_FILE=$gpcc" >> /tmp/release.properties
-                                echo "NOTEBOOK_VERSION=$shortname" >> /tmp/release.properties
-				;;
                 *)              echo "UNrecognized File: $justfile";exit;;
 
         esac
