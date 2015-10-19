@@ -36,7 +36,7 @@ gpcmdr --start
 echo "* Greenplum Command Center Started."
 echo "* Staring Apache Zeppelin Server...."
 sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
-echo "* Apache Zepeelin Server Started."
+echo "* Apache Zeppelin Server Started."
 echo "********************************************************************************************"
 echo "* Updating Tutorial Files..."
 cd ~/gpdb-sandbox-tutorials;git pull > /dev/null 2>&1;cd

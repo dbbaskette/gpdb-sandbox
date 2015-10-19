@@ -1,36 +1,82 @@
 #!/usr/bin/env bash
 source /tmp/release.properties
-
 get_versions(){
-echo "GET VERSIONS!"
 shopt -s nullglob
 for filename in /tmp/bins/*
 do
-	echo $filename
-	echo ${filename:10}
-        case ${filename:10} in
-                *greenplum-db*) gpdb=${filename:10};;
-                *greenplum-cc*) gpcc=${filename:10};;
-                *madlib*)       madlib=${filename:10};;
-                *pljava*)       plj=${filename:10};;
-                *plperl*)       plpr=${filename:10};;
-                *plr*)          plr=${filename:10};;
-                *zeppelin*)     zepp=${filename:10};;
-                *postgis*)      post=${filename:10};;
-                *notebook*)     note=${filename:10};;
-                *)              echo "UNrecognized File: ${filename:10}";exit;;
+	justfile=${filename:10}
+        case $justfile in
+                *greenplum-db*) gpdb=$justfile
+				strip_ext $justfile
+				echo "GPDB_FILE=$gpdb" >> /tmp/release.properties
+				echo "GPDB_VERSION=$shortname" >> /tmp/release.properties
+				gpdbnum=${gpdb:13}
+				echo "GPDB_VERSION_NUMBER=${gpdbnum%%-*}" >>/tmp/release.properties 
+				;;
+                *greenplum-cc*) gpcc=$justfile
+				strip_ext $justfile
+                                echo "GPCC_FILE=$gpcc" >> /tmp/release.properties
+                                echo "GPCC_VERSION=$shortname" >> /tmp/release.properties
+                                ;;
+
+                *madlib*)       madlib=$justfile
+				strip_ext $justfile
+                                echo "MADLIB_FILE=$madlib" >> /tmp/release.properties
+                                echo "MADLIB_VERSION=$shortname" >> /tmp/release.properties
+				;;
+                *pljava*)       plj=$justfile
+        			strip_ext $justfile
+                                echo "PLJAVA_FILE=$plj" >> /tmp/release.properties
+                                echo "PLJAVA_VERSION=$shortname" >> /tmp/release.properties
+				;;
+                *plperl*)       plpr=$justfile
+        			strip_ext $justfile
+                                echo "PLPERL_FILE=$plpr" >> /tmp/release.properties
+                                echo "PLPERL_VERSION=$shortname" >> /tmp/release.properties
+				;;
+                *plr*)          plr=$justfile
+        			strip_ext $justfile
+                                echo "PLR_FILE=$plr" >> /tmp/release.properties
+                                echo "PLR_VERSION=$shortname" >> /tmp/release.properties
+				;;
+                *zeppelin*)     zepp=$justfile
+        			strip_ext $justfile
+				echo $zepp
+				echo $shortname
+                                echo "ZEPPELIN_FILE=$zepp" >> /tmp/release.properties
+                                echo "ZEPPELIN_VERSION=$shortname" >> /tmp/release.properties
+				;;
+                *postgis*)      post=$justfile
+        			strip_ext $justfile
+                                echo "POSTGIS_FILE=$post" >> /tmp/release.properties
+                                echo "POSTGIS_VERSION=$shortname" >> /tmp/release.properties
+				;;
+                *notebook*)     note=$justfile
+        			strip_ext $justfile
+                                echo "NOTEBOOK_FILE=$gpcc" >> /tmp/release.properties
+                                echo "NOTEBOOK_VERSION=$shortname" >> /tmp/release.properties
+				;;
+                *)              echo "UNrecognized File: $justfile";exit;;
 
         esac
 done
-
-echo ${gpdb:13}
-gpdbv=${gpdb:13}
-echo ${gpdbv%%-*}
-export gpdbversion=${gpdbv%%-*}
-echo $gpdbversion
 }
 
+
+strip_ext(){
+ case ${1##*.} in
+        *gppkg)        shortname=${1%.gppkg};;
+        *zip)          shortname=${1%.zip};;
+        *tar)          shortname=${1%.tar};;
+        *gz)           shortname=${1%.tar.gz};;
+ esac
+
+
+}
+
+
 install_binaries(){
+source /tmp/release.properties
 unzip  /tmp/bins/$GPDB_VERSION.zip -d /tmp/bins
 unzip  /tmp/bins/$GPCC_VERSION.zip -d /tmp/bins
 
@@ -112,7 +158,7 @@ cat > "\$hostsfile" <<HOSTS
 HOSTS
 
 sed -i "/^IP:/ s/$/ \$ip/" /etc/issue
-#sed -i "s/Version:/Version: $gpdbversion/g" /etc/issue
+#sed -i "s/Version:/Version: $GPDB_VERSION_NUMBER/g" /etc/issue
 #sed -i "s/@@@/\$ip/g" /etc/issue
 
 EOF
@@ -132,7 +178,7 @@ cat > /etc/issue  << EOF
                               ###     
 -----------------------------------------------------------------------------
 Welcome to the Pivotal Greenplum DB - Data Science Sandbox with Apache MADLIB
-			 Version:$gpdbversion
+			 Version:$GPDB_VERSION_NUMBER
 -----------------------------------------------------------------------------
 Hostname: \n
 IP:

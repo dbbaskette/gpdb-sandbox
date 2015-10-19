@@ -40,10 +40,14 @@
     }
   ],
  "provisioners": [ 
+	{
+		"type":"shell",
+		"inline":["mkdir -p /tmp/bins"]
+	},
 	{ 
       		"type": "file",
-      		"source": "bins",
-      		"destination": "/tmp"
+      		"source": "/Users/dbaskette/Software/GREENPLUM/",
+      		"destination": "/tmp/bins/"
    	},
         {
                 "type": "file",
