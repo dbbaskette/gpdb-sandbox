@@ -13,7 +13,8 @@
         [ "modifyvm", "{{.Name}}", "--memory", "8192" ],
         [ "modifyvm", "{{.Name}}", "--cpus", "2" ],
         [ "modifyvm", "{{.Name}}", "--natpf1", "guest_http,tcp,,10000,,8080" ],
-        [ "modifyvm", "{{.Name}}", "--natpf1", "guest_ssh,tcp,,2200,,22" ]
+        [ "modifyvm", "{{.Name}}", "--natpf1", "guest_ssh,tcp,,2200,,22" ],
+        [ "storageattach", "{{.Name}}", "--storagectl", "IDE Controller", "--port","1","--device","0","--type","dvddrive","--medium","none" ]
       ],
 
       "headless": "{{user `headless`}}",

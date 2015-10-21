@@ -14,6 +14,7 @@ source /tmp/release.properties
 # Add Entry tp pg_hba.conf to open up access
 echo "host all all 0.0.0.0/0 trust" >> /gpdata/master/gpseg-1/pg_hba.conf
 echo "host all all 0.0.0.0/0 trust" >> /gpdata/segments/gpseg0/pg_hba.conf
+echo "host all all 0.0.0.0/0 trust" >> /gpdata/segments/gpseg1/pg_hba.conf
 
 # Clean up the  files
 #rm -rf /tmp/configs
@@ -21,9 +22,9 @@ echo "host all all 0.0.0.0/0 trust" >> /gpdata/segments/gpseg0/pg_hba.conf
 
 # BUILD START/STOP SCRIPTS
 cat > /home/gpadmin/start_all.sh << EOF
-echo "********************************************************************************************"
-echo "* This script starts the Greenplum Database, Greenplum Control Center, and Apache Zeppelin *"
-echo "********************************************************************************************"
+echo "**************************************************************************************"
+echo "* This script starts the Greenplum DB, Greenplum Control Center, and Apache Zeppelin *"
+echo "**************************************************************************************"
 echo "* Starting Greenplum Database..."
 ip=\$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print \$1}')
 source /usr/local/greenplum-db/greenplum_path.sh
@@ -37,19 +38,19 @@ echo "* Greenplum Command Center Started."
 echo "* Staring Apache Zeppelin Server...."
 sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
 echo "* Apache Zeppelin Server Started."
-echo "********************************************************************************************"
+echo "**************************************************************************************"
 echo "* Updating Tutorial Files..."
 cd ~/gpdb-sandbox-tutorials;git pull > /dev/null 2>&1;cd
 echo "* Tutorials Updated."
-echo "********************************************************************************************"
+echo "**************************************************************************************"
 echo " Pivotal Greenplum Database Started on port 5432        "
 echo " Pivotal Greenplum Command Center started on port 28080 "
 echo "		http://\$ip:28080			       "
 echo "		Username: gpmon 			       "                    
-echo " 		Password: gpmon				       "
+echo " 		Password: pivotal			       "
 echo " Apache Zeppelin started on port 8080		       "
 echo "		http://\$ip:8080				       "
-echo "********************************************************************************************"
+echo "**************************************************************************************"
 echo;echo
 EOF
 
