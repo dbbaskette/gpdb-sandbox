@@ -32,7 +32,7 @@ Modifications Required:
 1) Install Packer  
 2) Clone Repo  
 3) Modify json to point to binary location  
-4) execute: `packer build -force gpdb-sandbox.json`
+4) execute: `packer build -force gpdb-sandbox.json`  or to build either vbox or vmware add "-only=vbox" or "-only=vmware"
 
-This will generate the OVA which can then be imported into VMware Fusion or VirtualBox.
+This will generate the OVA which can then be imported into VirtualBox, and/or a zip file for use with VMware
 
