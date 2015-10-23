@@ -12,7 +12,9 @@ set
 source /tmp/release.properties
 
 # Add Entry tp pg_hba.conf to open up access
-echo "host all all 0.0.0.0/0 trust" >> /gpdata/master/gpseg-1/pg_hba.conf
+echo "local    tutorial            +users     md5" >> /gpdata/master/gpseg-1/pg_hba.conf
+echo "host all all 0.0.0.0/0 md5" >> /gpdata/master/gpseg-1/pg_hba.conf
+
 echo "host all all 0.0.0.0/0 trust" >> /gpdata/segments/gpseg0/pg_hba.conf
 echo "host all all 0.0.0.0/0 trust" >> /gpdata/segments/gpseg1/pg_hba.conf
 
@@ -40,7 +42,7 @@ sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
 echo "* Apache Zeppelin Server Started."
 echo "**************************************************************************************"
 echo "* Updating Tutorial Files..."
-cd ~/gpdb-sandbox-tutorials;git pull > /dev/null 2>&1;cd
+cd ~/gpdb-sandbox-tutorials;git pull > /dev/null 2>&1;tar xvfz faa.tar.gz;cd
 echo "* Tutorials Updated."
 echo "**************************************************************************************"
 echo " Pivotal Greenplum Database Started on port 5432        "
@@ -89,7 +91,7 @@ chmod +x /home/gpadmin/stop_all.sh
 sed '$d' /etc/hosts
 
 # CLEAN UP
-rm -f /home/gpadmin/VBoxGuestAdditions.iso
+#rm -f /home/gpadmin/VBoxGuestAdditions.iso
 rm -rf /tmp/bins
 rm -rf /tmp/configs
 
