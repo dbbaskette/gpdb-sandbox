@@ -2,9 +2,11 @@
 	 
 	
 # Greenplum Database Sandbox Builder
-<img src="https://raw.githubusercontent.com/dbbaskette/gpdb-sandbox/gh-pages/images/Sandman_(William_Baker).JPG?token=ACbVkUI1WnnUpyJAOIAZbDH4AHJsBj63ks5WM91-wA%3D%3D" width="300">  
-Packer-Based Virtual Appliance Build Tool for the Greenplum Database
-Requirements:  
+<img src="https://raw.githubusercontent.com/dbbaskette/gpdb-sandbox/gh-pages/images/Sandman_(William_Baker).JPG?token=ACbVkUI1WnnUpyJAOIAZbDH4AHJsBj63ks5WM91-wA%3D%3D" width="300">   
+###Packer-Based Virtual Appliance Build Tool for the Greenplum Database
+
+**Requirements:**  
+
 * Packer  
 * Virtual Box   
 * Greenplum Database Binaries  
@@ -28,10 +30,10 @@ Modifications Required:
         
 
  
-1) Install Packer  
-2) Clone Repo  
-3) Modify json to point to binary location  
-4) execute: `packer build -force gpdb-sandbox.json`  or to build either vbox or vmware add "-only=vbox" or "-only=vmware"
+1. Install Packer  
+2. Clone Repo  
+3. Modify json to point to binary location  
+4. execute: `packer build -force gpdb-sandbox.json`  or to build either vbox or vmware add "-only=vbox" or "-only=vmware"
 
 This will generate the OVA which can then be imported into VirtualBox, and/or a zip file for use with VMware
 
