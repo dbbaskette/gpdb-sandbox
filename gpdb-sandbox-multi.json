@@ -3,7 +3,7 @@
 {
 	"iso_url": "http://mirrors.adams.net/centos/6.7/isos/x86_64/CentOS-6.7-x86_64-bin-DVD1.iso",
 	"iso_checksum": "51f90e8ddd2ea199780065eaf75130ad",
-	"headless": "true",
+	"headless": "false",
 	"vm_basename":"PivotalGPDB-Sandbox-Centos-6.7-x86_64"
 
 },
@@ -45,7 +45,7 @@
 		[ "modifyvm", "{{.Name}}", "--memory", "8192" ],
 		[ "modifyvm", "{{.Name}}", "--cpus", "2" ],
   		[ "modifyvm", "{{.Name}}", "--natpf1", "http,tcp,,80,,80" ],
-                [ "modifyvm", "{{.Name}}", "--natpf1", "ssh,tcp,10.0.2.15,22,,22" ],
+                [ "modifyvm", "{{.Name}}", "--natpf1", "ssh,tcp,,2200,,22" ],
                 [ "modifyvm", "{{.Name}}", "--natpf1", "gpdb,tcp,,5432,,5432" ],
                 [ "modifyvm", "{{.Name}}", "--natpf1", "zepp,tcp,,8080,,8080" ],
                 [ "modifyvm", "{{.Name}}", "--natpf1", "gpcc,tcp,,28080,,28080" ]
@@ -71,6 +71,8 @@
 }
 ],
 "provisioners": [
+ 
+
 {
 	"type":"shell",
 	"inline":["mkdir -p /tmp/bins"]
@@ -93,6 +95,7 @@
 {
 	"type": "shell",
 	"execute_command": "echo 'pivotal' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+	"environment_vars": "BUILD_NAME={{build_name}}",
 	"scripts": [
 		"scripts/systemConfig.sh"
 	]
@@ -108,6 +111,7 @@
 {
 	"type": "shell",
 	"execute_command": "echo 'pivotal' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+	"environment_vars": "BUILD_NAME={{build_name}}",
 	"scripts": [
 		"scripts/configureGPDB.sh",
 		"scripts/installZeppelin.sh",

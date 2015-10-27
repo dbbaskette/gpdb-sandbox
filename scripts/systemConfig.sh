@@ -2,6 +2,7 @@
 source /tmp/release.properties
 get_versions(){
 shopt -s nullglob
+echo $BUILD_NAME Build Started
 for filename in /tmp/bins/*
 do
 	justfile=${filename:10}
@@ -162,7 +163,9 @@ EOF
 
 
 setup_message(){
-
+echo $BUILD_NAME
+if [[ $BUILD_NAME = "vmware" ]];then
+echo "BUILDING ISSUE for VMWARE"
 cat > /etc/issue  << EOF
                                      ##                             
   ###                                 #                  ####  #### 
@@ -173,7 +176,7 @@ cat > /etc/issue  << EOF
                               ###     
 -----------------------------------------------------------------------------
 Welcome to the Pivotal Greenplum DB - Data Science Sandbox with Apache MADLIB
-			 Version:$GPDB_VERSION_NUMBER
+			 Version:$GPDB_VERSION_NUMBER   - vmware edition
 -----------------------------------------------------------------------------
 Hostname: \n
 IP:
@@ -189,6 +192,41 @@ GPDB Password: pivotal
 2)  Type: ./start_all.sh
 -----------------------------------------------------------------------------
 EOF
+
+else
+echo "BUILDING ISSUE for VBOX"
+cat > /etc/issue  << EOF
+                                     ##
+  ###                                 #                  ####  ####
+ #    ## ##  ###   ###  ####   ###    #   # #  #####      # #   # #
+## #   ## # ##### #####  # ##  # ##   #   # #  # # ##    #  #  ###
+## #   #    ##    ##     # #   # #   ##   # #  # # #     # ##  # ##
+ ###  ###    ###   ###  ## ##  ##   ####  #### # # #    ####  ####
+                              ###
+-----------------------------------------------------------------------------
+Welcome to the Pivotal Greenplum DB - Data Science Sandbox with Apache MADLIB
+                         Version:$GPDB_VERSION_NUMBER  - vbox edition
+-----------------------------------------------------------------------------
+Hostname: \n
+Remote SSH:  "ssh gpadmin@localhost -p 2200"
+Username: root
+Password: pivotal
+GPDB Admin: gpadmin
+GPDB Password: pivotal
+
+-----------------------------------------------------------------------------
+                To Start Database, Command Center, and Apache Zeppelin
+-----------------------------------------------------------------------------
+1)  Login as gpadmin
+2)  Type: ./start_all.sh
+-----------------------------------------------------------------------------
+EOF
+
+
+fi
+
+
+
 }
 
 
