@@ -2,7 +2,7 @@
 	 
 	
 # Greenplum Database Sandbox Builder
-<img src="https://raw.githubusercontent.com/dbbaskette/gpdb-sandbox/gh-pages/images/Sandman_(William_Baker).JPG?token=ACbVkUI1WnnUpyJAOIAZbDH4AHJsBj63ks5WM91-wA%3D%3D" width="300">   
+<img src="https://github.com/dbbaskette/gpdb-sandbox/blob/gh-pages/images/GPSANDBOX.jpg?token=ACbVkUI1WnnUpyJAOIAZbDH4AHJsBj63ks5WM91-wA%3D%3D" width="300">   
 ####Packer-Based Virtual Appliance Build Tool for the Greenplum Database
 
 **Requirements:**  
