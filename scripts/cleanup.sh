@@ -41,7 +41,7 @@ echo "* Greenplum Database Started."
 echo "* Starting Greenplum Command Center..."
 gpcmdr --start
 echo "* Greenplum Command Center Started."
-echo "* Staring Apache Zeppelin Server...."
+echo "* Starting Apache Zeppelin Server...."
 sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
 echo "* Apache Zeppelin Server Started."
 echo "*********************************************************************************"
@@ -74,7 +74,7 @@ echo "* Greenplum Database Started."
 echo "* Starting Greenplum Command Center..."
 gpcmdr --start
 echo "* Greenplum Command Center Started."
-echo "* Staring Apache Zeppelin Server...."
+echo "* Starting Apache Zeppelin Server...."
 sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
 echo "* Apache Zeppelin Server Started."
 echo "*********************************************************************************"
