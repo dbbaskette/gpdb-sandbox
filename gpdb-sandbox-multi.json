@@ -4,14 +4,15 @@
 	"iso_url": "http://mirrors.adams.net/centos/6.7/isos/x86_64/CentOS-6.7-x86_64-bin-DVD1.iso",
 	"iso_checksum": "51f90e8ddd2ea199780065eaf75130ad",
 	"headless": "false",
-	"vm_basename":"PivotalGPDB-Sandbox-Centos-6.7-x86_64"
+	"vm_basename":"PivotalGPDB-Sandbox",
+	"gpversion":"4.3.6.2"
 
 },
 "builders": [
 {
 	"name": "vmware",
 	"type": "vmware-iso",
-	"vm_name": "{{user `vm_basename`}}-{{build_name}}",
+	"vm_name": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}",
 	"disk_size": 20480,
 	"vmx_data": {
 		"cpuid.coresPerSocket": "1",
@@ -19,7 +20,7 @@
 		"numvcpus": "2"
 	},
 	"headless": "{{user `headless`}}",
-	"output_directory": "{{user `vm_basename`}}-{{build_name}}",
+	"output_directory": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}", 
 	"guest_os_type": "centos-64",
 	"iso_url": "{{user `iso_url`}}",
 	"iso_checksum": "{{user `iso_checksum`}}",
@@ -39,7 +40,7 @@
 {	
 	"name": "vbox",
 	"type": "virtualbox-iso",
-	"vm_name": "{{user `vm_basename`}}-{{build_name}}",
+	"vm_name": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}", 
 	"disk_size": 20480,
 	"vboxmanage": [
 		[ "modifyvm", "{{.Name}}", "--memory", "8192" ],
@@ -51,7 +52,7 @@
                 [ "modifyvm", "{{.Name}}", "--natpf1", "gpcc,tcp,,28080,,28080" ]
 	],
 	"headless": "{{user `headless`}}",
-	"output_directory": "{{user `vm_basename`}}-{{build_name}}",
+	"output_directory": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}", 
 	"guest_os_type": "RedHat_64",
 	"iso_url": "{{user `iso_url`}}",
 	"iso_checksum": "{{user `iso_checksum`}}",
@@ -123,7 +124,7 @@
 
 {
   "type": "compress",
-  "output": "{{user `vm_basename`}}-{{build_name}}.zip",
+  "output": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}.zip",
   "compression": 9,
   "keep_input_artifacts":"true",
   "only": ["vmware"]

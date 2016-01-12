@@ -15,6 +15,10 @@ source /tmp/release.properties
 echo "local    tutorial            +users     md5" >> /gpdata/master/gpseg-1/pg_hba.conf
 echo "host all all 0.0.0.0/0 md5" >> /gpdata/master/gpseg-1/pg_hba.conf
 
+# REMOVE OPEN LINE FOR BUILD VM
+sed -i "/192.168/d" /gpdata/master/gpseg-1/pg_hba.conf
+
+
 echo "host all all 0.0.0.0/0 trust" >> /gpdata/segments/gpseg0/pg_hba.conf
 echo "host all all 0.0.0.0/0 trust" >> /gpdata/segments/gpseg1/pg_hba.conf
 
@@ -35,11 +39,13 @@ echo "* Starting Greenplum Database..."
 ip=\$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print \$1}')
 source /usr/local/greenplum-db/greenplum_path.sh
 source /usr/local/greenplum-cc-web/gpcc_path.sh
+source /home/gpadmin/gp-wlm/gp-wlm_path.sh
 export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
 gpstart -a
 echo "* Greenplum Database Started."
 echo "* Starting Greenplum Command Center..."
 gpcmdr --start
+svc-mgr.sh --action=cluster-start --service=all
 echo "* Greenplum Command Center Started."
 echo "* Starting Apache Zeppelin Server...."
 sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
@@ -68,6 +74,7 @@ echo "**************************************************************************
 echo "* Starting Greenplum Database..."
 source /usr/local/greenplum-db/greenplum_path.sh
 source /usr/local/greenplum-cc-web/gpcc_path.sh
+source /home/gpadmin/gp-wlm/gp-wlm_path.sh
 export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
 gpstart -a
 echo "* Greenplum Database Started."
@@ -121,8 +128,8 @@ echo;
 EOF
 
 
-
-
+# ENABLE NTP
+chkconfig ntpd on
 
 chown gpadmin: /home/gpadmin/start_all.sh
 chmod +x /home/gpadmin/start_all.sh

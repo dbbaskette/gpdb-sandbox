@@ -52,6 +52,13 @@ do
                                 echo "POSTGIS_FILE=$post" >> /tmp/release.properties
                                 echo "POSTGIS_VERSION=$shortname" >> /tmp/release.properties
 				;;
+		*pgcrypto*)     pgcrypto=$justfile
+                                strip_ext $justfile
+                                echo "PGCRYPTO_FILE=$pgcrypto" >> /tmp/release.properties
+                                echo "PGCRYPTO_VERSION=$shortname" >> /tmp/release.properties
+                                ;;
+
+
                 *)              echo "UNrecognized File: $justfile";exit;;
 
         esac
@@ -153,9 +160,21 @@ cat > "\$hostsfile" <<HOSTS
 \$ip \$fqdn \$shortname
 HOSTS
 
-sed -i "/^IP:/ s/$/ \$ip/" /etc/issue
+# FIX IP LINE
+sed -i "/IP:/d" /etc/issue
+sed -i "13i IP: \$ip" /etc/issue
+#sed -i "/^IP:/ s/$/ \$ip/" /etc/issue
 #sed -i "s/Version:/Version: $GPDB_VERSION_NUMBER/g" /etc/issue
 #sed -i "s/@@@/\$ip/g" /etc/issue
+
+
+# ADD APPROPRIATE LOCAL IP TO PG_HBA.CONF
+# 	DELETE CURRENT LINE THEN ADD NEW ONE
+sed -i "/192.168/d" /gpdata/master/gpseg-1/pg_hba.conf
+sed -i "86i host all gpadmin \$ip/32 trust" /gpdata/master/gpseg-1/pg_hba.conf
+
+# THIS METHOD ADDED TO END WHICH DIDNT WORK PROPERLT
+#echo "host all gpadmin \$ip/32 trust" >> /gpdata/master/gpseg-1/pg_hba.conf
 
 EOF
 
@@ -176,7 +195,7 @@ cat > /etc/issue  << EOF
                               ###     
 -----------------------------------------------------------------------------
 Welcome to the Pivotal Greenplum DB - Data Science Sandbox with Apache MADLIB
-			 Version:$GPDB_VERSION_NUMBER   - vmware edition
+	 Version:$GPDB_VERSION_NUMBER   - vmware edition (with PGCRYPTO)
 -----------------------------------------------------------------------------
 Hostname: \n
 IP:
@@ -205,7 +224,7 @@ cat > /etc/issue  << EOF
                               ###
 -----------------------------------------------------------------------------
 Welcome to the Pivotal Greenplum DB - Data Science Sandbox with Apache MADLIB
-                         Version:$GPDB_VERSION_NUMBER  - vbox edition
+         Version:$GPDB_VERSION_NUMBER  - vbox edition (with PGCRYPTO)
 -----------------------------------------------------------------------------
 Hostname: \n
 Remote SSH:  "ssh gpadmin@localhost -p 2200"
