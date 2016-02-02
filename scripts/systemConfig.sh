@@ -111,6 +111,8 @@ mkdir -p /gpdata/segments
 chown -R gpadmin: /gpdata
 }
 
+
+
 setup_gpdb(){
 fqdn="$SANDBOX.localdomain"
 hostsfile="/etc/hosts"
@@ -203,7 +205,7 @@ Username: root
 Password: pivotal
 GPDB Admin: gpadmin
 GPDB Password: pivotal
-
+Tutorial User:  gpuser     Tutorial User Password: pivotal
 -----------------------------------------------------------------------------
                 To Start Database, Command Center, and Apache Zeppelin
 -----------------------------------------------------------------------------
@@ -232,7 +234,7 @@ Username: root
 Password: pivotal
 GPDB Admin: gpadmin
 GPDB Password: pivotal
-
+Tutorial User:  gpuser     Tutorial User Password: pivotal
 -----------------------------------------------------------------------------
                 To Start Database, Command Center, and Apache Zeppelin
 -----------------------------------------------------------------------------
