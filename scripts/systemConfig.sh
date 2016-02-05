@@ -118,9 +118,7 @@ fqdn="$SANDBOX.localdomain"
 hostsfile="/etc/hosts"
 shortname=$(echo "$fqdn" | cut -d "." -f1)
 ip=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
-# JON ROBERTS IP FIX
-#adapter=`ifconfig  | grep Link | grep Ethernet | awk -F ' ' '{print $1}'`
-#ip=`ifconfig $adapter | grep "inet addr" | awk -F ' ' '{print $2}' | awk -F ':' '{print $2}'`
+#ip=$(/sbin/ifconfig | perl -e 'while (<>) { if (/inet +addr:((\d+\.){3}\d+)\s+/ and $1 ne "127.0.0.1") { $ip = $1; break; } } print "$ip\n"; ' )
 cat > $hostsfile <<HOSTS
 #This file is automatically genreated on boot; updated at $(date)
 127.0.0.1 localhost.localdomain localhost
@@ -147,10 +145,8 @@ sed -i '/HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth0
 
 setup_hostname() {
 cat >> /etc/rc.d/rc.local <<EOF
-ip=\$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print \$1}')
-# JON ROBERTS IP FIX
-#adapter=`ifconfig  | grep Link | grep Ethernet | awk -F ' ' '{print \$1}'`
-#ip=`ifconfig \$adapter | grep "inet addr" | awk -F ' ' '{print \$2}' | awk -F ':' '{print \$2}'`
+#ip=\$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print \$1}')
+ip=\$(/sbin/ifconfig | perl -e 'while (<>) { if (/inet +addr:((\d+\.){3}\d+)\s+/ and \$1 ne "127.0.0.1") { \$ip = \$1; break; } } print "\$ip\n"; ' )
 fqdn="$SANDBOX.localdomain"
 shortname=\$(echo "\$fqdn" | cut -d "." -f1)
 hostsfile=/etc/hosts

@@ -125,8 +125,8 @@
 {
   "type": "compress",
   "output": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}.zip",
-  "compression": 9,
-  "keep_input_artifacts":"true",
+  "compression_level": 9,
+  "keep_input_artifact":true,
   "only": ["vmware"]
 }
   ]
