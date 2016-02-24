@@ -80,6 +80,7 @@ strip_ext(){
 
 install_binaries(){
 source /tmp/release.properties
+yum -y install unzip
 unzip  /tmp/bins/$GPDB_VERSION.zip -d /tmp/bins
 unzip  /tmp/bins/$GPCC_VERSION.zip -d /tmp/bins
 
