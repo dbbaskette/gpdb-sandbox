@@ -4,8 +4,8 @@
 	"iso_url": "http://mirrors.adams.net/centos/6.7/isos/x86_64/CentOS-6.7-x86_64-bin-DVD1.iso",
 	"iso_checksum": "51f90e8ddd2ea199780065eaf75130ad",
 	"headless": "false",
-	"vm_basename":"PivotalGPDB-Sandbox",
-	"gpversion":"4.3.7.2"
+	"vm_basename":"pivotal-stack",
+	"gpversion":"1.0"
 
 },
 "builders": [
@@ -89,15 +89,19 @@
 ],
 "provisioners": [
  
-
 {
-	"type":"shell",
-	"inline":["mkdir -p /tmp/bins"]
+        "type":"shell",
+        "inline":["mkdir -p /tmp/bins /tmp/FraudDetection-wwko"]
 },
 {
 	"type": "file",
-	"source": "/Users/dbaskette/Software/GREENPLUM/",
+	"source": "/Users/dbaskette/Software/piv-demostack/",
 	"destination": "/tmp/bins/"
+},
+{
+        "type": "file",
+        "source": "./FraudDetection-wwko/",
+        "destination": "/tmp/FraudDetection-wwko/"
 },
 {
 	"type": "file",
@@ -126,11 +130,19 @@
 	]
 },
 {
+        "type": "shell",
+        "execute_command": "echo 'pivotal' | {{ .Vars }} sudo -u pivotal -E -S sh '{{ .Path }}'",
+        "scripts": [
+                "scripts/installDEMO.sh"
+        ]
+},
+{
 	"type": "shell",
 	"execute_command": "echo 'pivotal' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
 	"environment_vars": "BUILD_NAME={{build_name}}",
 	"scripts": [
 		"scripts/configureGPDB.sh",
+		"scripts/installSPRINGXD.sh",
 		"scripts/installZeppelin.sh",
 		"scripts/cleanup.sh"
 	]

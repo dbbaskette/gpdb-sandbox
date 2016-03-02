@@ -13,6 +13,7 @@ source /tmp/release.properties
 
 # Add Entry tp pg_hba.conf to open up access
 echo "local    tutorial            +users     md5" >> /gpdata/master/gpseg-1/pg_hba.conf
+echo "local    gemfire pivotal trust" >> /gpdata/master/gpseg-1/pg_hba.conf
 echo "host all all 0.0.0.0/0 md5" >> /gpdata/master/gpseg-1/pg_hba.conf
 
 # REMOVE OPEN LINE FOR BUILD VM
@@ -51,10 +52,6 @@ echo "* Starting Apache Zeppelin Server...."
 sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
 echo "* Apache Zeppelin Server Started."
 echo "*********************************************************************************"
-echo "* Updating Tutorial Files..."
-cd ~/gpdb-sandbox-tutorials;git pull > /dev/null 2>&1;tar xvfz faa.tar.gz;cd
-echo "* Tutorials Updated."
-echo "*********************************************************************************"
 echo " Pivotal Greenplum Database Started on port 5432        "
 echo " Pivotal Greenplum Command Center started on port 28080 "
 echo "		http://\$ip:28080			       "
@@ -69,18 +66,18 @@ else
 echo "BUILD for VBOX"
 cat > /home/gpadmin/start_all.sh << EOF
 echo "*********************************************************************************"
-echo "* Script starts the Greenplum DB, Greenplum Control Center, and Apache Zeppelin *"
+echo "* Script starts the Greenplum DB, and Apache Zeppelin *"
 echo "*********************************************************************************"
 echo "* Starting Greenplum Database..."
 source /usr/local/greenplum-db/greenplum_path.sh
-source /usr/local/greenplum-cc-web/gpcc_path.sh
-source /home/gpadmin/gp-wlm/gp-wlm_path.sh
+#source /usr/local/greenplum-cc-web/gpcc_path.sh
+#source /home/gpadmin/gp-wlm/gp-wlm_path.sh
 export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
 gpstart -a
 echo "* Greenplum Database Started."
-echo "* Starting Greenplum Command Center..."
-gpcmdr --start
-echo "* Greenplum Command Center Started."
+#echo "* Starting Greenplum Command Center..."
+#gpcmdr --start
+#echo "* Greenplum Command Center Started."
 echo "* Starting Apache Zeppelin Server...."
 sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
 echo "* Apache Zeppelin Server Started."
@@ -90,12 +87,12 @@ cd ~/gpdb-sandbox-tutorials;git pull > /dev/null 2>&1;tar xvfz faa.tar.gz;cd
 echo "* Tutorials Updated."
 echo "*********************************************************************************"
 echo " Pivotal Greenplum Database Started on port 5432        "
-echo " Pivotal Greenplum Command Center started on port 28080 "
-echo "          http://localhost:28080                              "
-echo "          Username: gpmon                                "
-echo "          Password: pivotal                              "
-echo " Apache Zeppelin started on port 8080                    "
-echo "          http://localhost:8080                                       "
+#echo " Pivotal Greenplum Command Center started on port 28080 "
+#echo "          http://localhost:28080                              "
+#echo "          Username: gpmon                                "
+#echo "          Password: pivotal                              "
+echo " Apache Zeppelin started on port 8081                    "
+echo "          http://localhost:8081                                       "
 echo "*********************************************************************************"
 echo;echo
 EOF

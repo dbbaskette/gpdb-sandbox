@@ -24,4 +24,4 @@ kernel.threads-max = 798720
 kernel.pid_max = 798720
 net.core.rmem_max=2097152
 net.core.wmem_max=2097152
-vm.overcommit_memory=2
+vm.overcommit_memory=1

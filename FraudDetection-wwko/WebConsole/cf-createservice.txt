@@ -1,0 +1,1 @@
+cf cups gemfire -p '{"locatorHost":"10.68.52.85","locatorPort":"10334", "RestAPI":"http://10.68.52.85:8888/gemfire-api/v1/"}'

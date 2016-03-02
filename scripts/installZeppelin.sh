@@ -10,6 +10,7 @@ cp /tmp/bins/$ZEPPELIN_VERSION.tar.gz /usr/local
 cd /usr/local
 tar xvfz $ZEPPELIN_VERSION.tar.gz
 rm -f $ZEPPELIN_VERSION.tar.gz
+mv /tmp/configs/zeppelin-site.xml /usr/local/$ZEPPELIN_VERSION/conf/.
 
 #cat >> /etc/rc.d/rc.local <<EOF
 #/usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
