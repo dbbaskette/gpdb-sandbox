@@ -1,29 +1,26 @@
 {
 "variables": 
 {
-	"iso_url": "http://mirrors.adams.net/centos/6.7/isos/x86_64/CentOS-6.7-x86_64-bin-DVD1.iso",
+	"iso_url": "http://mirrors.gigenet.com/centos/6.7/isos/x86_64/CentOS-6.7-x86_64-bin-DVD1.iso",
 	"iso_checksum": "51f90e8ddd2ea199780065eaf75130ad",
 	"headless": "false",
 	"vm_basename":"PivotalGPDB-Sandbox",
-	"gpversion":"4.3.7.2"
+	"gpversion":"4.3.8.0"
 
 },
 "builders": [
 {
- "name": "aws",
- "type": "amazon-ebs",
-  "access_key": "YOUR ACCESS KEY",
-  "secret_key": "YOUR SECRET KEY",
-  "region": "us-east-1",
-  "source_ami": "ami-57cd8732",
-  "instance_type": "m4.xlarge",
-  "ssh_username": "centos",
-  "ssh_private_key_file": "YOUR PEM FILE PATH",
-  "ssh_keypair_name": "bosh",
-        "ssh_pty": "true",
-
-  "ami_name": "gpdb-cloud-sandbox {{timestamp}}",
- "enhanced_networking": true
+	"name": "aws",
+	"type": "amazon-ebs",
+	"region": "us-east-1",
+	"source_ami": "ami-a87a70c2",
+	"instance_type": "m4.xlarge",
+	"ssh_username": "gpadmin",
+	"ssh_pty": "true",
+	"ami_name": "gpdb-cloud-sandbox {{user `gpversion`}}-{{build_name}}",
+	"ami_description": "gpdb-cloud-sandbox {{user `gpversion`}}-{{build_name}} {{timestamp}}",
+        "force_deregister": "true",
+	"enhanced_networking": "true"
 },
 {
 	"name": "vmware",
@@ -96,7 +93,7 @@
 },
 {
 	"type": "file",
-	"source": "/Users/dbaskette/Software/GREENPLUM/",
+	"source": "/Users/scottkahler/Software/GREENPLUM/",
 	"destination": "/tmp/bins/"
 },
 {
@@ -108,6 +105,13 @@
 	"type": "file",
 	"source": "configs",
 	"destination": "/tmp"
+},
+{
+	"type": "shell",
+	"execute_command": "{{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+	"scripts": [
+		"scripts/env_tools.sh"
+	]
 },
 {
 	"type": "shell",

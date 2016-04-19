@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 source /tmp/release.properties
+set -e
+
 get_versions(){
 shopt -s nullglob
 echo $BUILD_NAME Build Started
@@ -57,9 +59,8 @@ do
                                 echo "PGCRYPTO_FILE=$pgcrypto" >> /tmp/release.properties
                                 echo "PGCRYPTO_VERSION=$shortname" >> /tmp/release.properties
                                 ;;
-
-
-                *)              echo "UNrecognized File: $justfile";exit;;
+                *)              echo "UNrecognized File: $justfile"
+                                ;;
 
         esac
 done
@@ -73,33 +74,29 @@ strip_ext(){
         *tar)          shortname=${1%.tar};;
         *gz)           shortname=${1%.tar.gz};;
  esac
-
-
 }
 
 
 install_binaries(){
 source /tmp/release.properties
 yum -y install unzip
-unzip  /tmp/bins/$GPDB_VERSION.zip -d /tmp/bins
-unzip  /tmp/bins/$GPCC_VERSION.zip -d /tmp/bins
 
-sed -i s/"more << EOF"/"cat << EOF"/g /tmp/bins/$GPDB_VERSION.bin
-sed -i s/"more << EOF"/"cat << EOF"/g /tmp/bins/$GPCC_VERSION.bin
-sed -i s/"more <<-EOF"/"cat <<-EOF"/g /tmp/bins/$GPCC_VERSION.bin
 
-/tmp/bins/$GPDB_VERSION.bin << EOF
-yes
+unzip  /tmp/bins/$GPDB_VERSION.zip -d /tmp/bins/
+unzip  /tmp/bins/$GPCC_VERSION.zip -d /tmp/bins/
 
-yes
-yes
-EOF
-/tmp/bins/$GPCC_VERSION.bin << EOF
-yes
+sed -i 's/more <</cat <</g' /tmp/bins/$GPDB_VERSION.bin
+sed -i 's/agreed=/agreed=1/' /tmp/bins/$GPDB_VERSION.bin
+sed -i 's/pathVerification=/pathVerification=1/' /tmp/bins/$GPDB_VERSION.bin
+sed -i '/defaultInstallPath=/a installPath=${defaultInstallPath}' /tmp/bins/$GPDB_VERSION.bin
 
-yes
-yes
-EOF
+sed -i 's/more <</cat <</g' /tmp/bins/$GPCC_VERSION.bin
+sed -i 's/agreed=/agreed=1/' /tmp/bins/$GPCC_VERSION.bin
+sed -i 's/pathVerification=/pathVerification=1/' /tmp/bins/$GPCC_VERSION.bin
+sed -i '/defaultInstallPath=/a installPath=${defaultInstallPath}' /tmp/bins/$GPCC_VERSION.bin
+
+/tmp/bins/$GPDB_VERSION.bin 
+/tmp/bins/$GPCC_VERSION.bin
 
 chown -R gpadmin: /usr/local/greenplum*
 
@@ -115,6 +112,7 @@ chown -R gpadmin: /gpdata
 
 
 setup_gpdb(){
+
 fqdn="$SANDBOX.localdomain"
 hostsfile="/etc/hosts"
 shortname=$(echo "$fqdn" | cut -d "." -f1)
@@ -134,19 +132,22 @@ HOSTS
 
 setup_configs(){
 
+echo "==> Setting up sysctl and limits"
 cat /tmp/configs/sysctl.conf.add >> /etc/sysctl.conf
 cat /tmp/configs/limits.conf.add >> /etc/security/limits.conf
 
 }
 
 setup_ipaddress() {
+
 rm -rf /etc/udev/rules.d/70-persistent-net.rules
 sed -i '/HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth0
+
 }
 
 setup_hostname() {
+
 cat >> /etc/rc.d/rc.local <<EOF
-#ip=\$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print \$1}')
 ip=\$(/sbin/ifconfig | perl -e 'while (<>) { if (/inet +addr:((\d+\.){3}\d+)\s+/ and \$1 ne "127.0.0.1") { \$ip = \$1; break; } } print "\$ip\n"; ' )
 fqdn="$SANDBOX.localdomain"
 shortname=\$(echo "\$fqdn" | cut -d "." -f1)
@@ -159,21 +160,20 @@ cat > "\$hostsfile" <<HOSTS
 \$ip \$fqdn \$shortname
 HOSTS
 
+# FIX NETWORKING FILE HOSTNAME
+sed -i "s/HOSTNAME=.*/HOSTNAME=gpdb-sandbox.localdomain/g" /etc/sysconfig/network
+
+# SET HOSTNAME
+hostname gpdb-sandbox.localdomain
+
 # FIX IP LINE
 sed -i "/IP:/d" /etc/issue
 sed -i "13i IP: \$ip" /etc/issue
-#sed -i "/^IP:/ s/$/ \$ip/" /etc/issue
-#sed -i "s/Version:/Version: $GPDB_VERSION_NUMBER/g" /etc/issue
-#sed -i "s/@@@/\$ip/g" /etc/issue
-
 
 # ADD APPROPRIATE LOCAL IP TO PG_HBA.CONF
 # 	DELETE CURRENT LINE THEN ADD NEW ONE
 sed -i "/192.168/d" /gpdata/master/gpseg-1/pg_hba.conf
 sed -i "86i host all gpadmin \$ip/32 trust" /gpdata/master/gpseg-1/pg_hba.conf
-
-# THIS METHOD ADDED TO END WHICH DIDNT WORK PROPERLT
-#echo "host all gpadmin \$ip/32 trust" >> /gpdata/master/gpseg-1/pg_hba.conf
 
 EOF
 
@@ -181,6 +181,7 @@ EOF
 
 
 setup_message(){
+
 echo $BUILD_NAME
 if [[ $BUILD_NAME = "vmware" ]];then
 echo "BUILDING ISSUE for VMWARE"
@@ -211,7 +212,7 @@ Tutorial User:  gpuser     Tutorial User Password: pivotal
 -----------------------------------------------------------------------------
 EOF
 
-else
+elif [[ $BUILD_NAME = "virtualbox" ]];then
 echo "BUILDING ISSUE for VBOX"
 cat > /etc/issue  << EOF
                                      ##
@@ -239,11 +240,37 @@ Tutorial User:  gpuser     Tutorial User Password: pivotal
 2)  Type: ./start_all.sh
 -----------------------------------------------------------------------------
 EOF
+else
+echo "BUILDING ISSUE for AWS"
+cat > /etc/issue  << EOF
+                                     ##
+  ###                                 #                  ####  ####
+ #    ## ##  ###   ###  ####   ###    #   # #  #####      # #   # #
+## #   ## # ##### #####  # ##  # ##   #   # #  # # ##    #  #  ###
+## #   #    ##    ##     # #   # #   ##   # #  # # #     # ##  # ##
+ ###  ###    ###   ###  ## ##  ##   ####  #### # # #    ####  ####
+                              ###
+-----------------------------------------------------------------------------
+Welcome to the Pivotal Greenplum DB - Data Science Sandbox with Apache MADLIB
+         Version:$GPDB_VERSION_NUMBER  - EC2 edition (with PGCRYPTO)
+-----------------------------------------------------------------------------
+Hostname: \n
+Remote SSH:  "ssh gpadmin@localhost"
+Username: root
+Password: pivotal
+GPDB Admin: gpadmin
+GPDB Password: pivotal
+Tutorial User:  gpuser     Tutorial User Password: pivotal
+-----------------------------------------------------------------------------
+                To Start Database, Command Center, and Apache Zeppelin
+-----------------------------------------------------------------------------
+1)  Login as gpadmin
+2)  Type: ./start_all.sh
+-----------------------------------------------------------------------------
+EOF
 
 
 fi
-
-
 
 }
 
@@ -258,7 +285,6 @@ _main() {
 	setup_configs
         setup_gpdb
 	setup_message
-
 }
 
 
