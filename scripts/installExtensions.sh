@@ -13,7 +13,7 @@ install_madlib(){
  source /usr/local/greenplum-db/greenplum_path.sh
  export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
  cd /tmp/bins
- tar xvfz $MADLIB_FILE --strip=1
+ tar xvfz $MADLIB_FILE 
  gppkg -i $MADLIB_VERSION.gppkg
  $GPHOME/madlib/bin/madpack install -s madlib -p greenplum -c gpadmin@$SANDBOX.localdomain:5432/template1
  $GPHOME/madlib/bin/madpack install -s madlib -p greenplum -c gpadmin@$SANDBOX.localdomain:5432/gpadmin
