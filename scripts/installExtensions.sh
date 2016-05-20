@@ -43,11 +43,22 @@ install_pgcrypto(){
  echo "source /home/gpadmin/gp-wlm/gp-wlm_path.sh" >> /home/gpadmin/.bashrc
 }
 
+install_plcontainer(){
+ gppkg -i $PLCONTAINER_FILE
+ psql -f $GPHOME/share/postgresql/plcontainer/plcontainer_install.sql -d template1
+ psql -f $GPHOME/share/postgresql/plcontainer/plcontainer_install.sql -d gpadmin
+ plcontainer-config --reset
+ docker pull pivotaldata/plcontainer_python:0.1.1-1
+ docker pull pivotaldata/plcontainer_python_shared:0.1.1-1
+ docker pull pivotaldata/plcontainer_anaconda:0.1.1-1
+ docker pull pivotaldata/plcontainer_r:0.1.1-1
+ docker pull pivotaldata/plcontainer_r_shared:0.1.1-1
+ }
 
 _main() {
 	install_madlib
 	install_pgcrypto
-
+        install_plcontainer
 }
 
 

@@ -59,6 +59,11 @@ do
                                 echo "PGCRYPTO_FILE=$pgcrypto" >> /tmp/release.properties
                                 echo "PGCRYPTO_VERSION=$shortname" >> /tmp/release.properties
                                 ;;
+		*plcontainer*)  plcontainer=$justfile
+                                strip_ext $justfile
+                                echo "PLCONTAINER_FILE=$plcontainer" >> /tmp/release.properties
+                                echo "PLCONTAINER_VERSION=$shortname" >> /tmp/release.properties
+                                ;;
                 *)              echo "UNrecognized File: $justfile"
                                 ;;
 
@@ -116,8 +121,7 @@ setup_gpdb(){
 fqdn="$SANDBOX.localdomain"
 hostsfile="/etc/hosts"
 shortname=$(echo "$fqdn" | cut -d "." -f1)
-ip=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
-#ip=$(/sbin/ifconfig | perl -e 'while (<>) { if (/inet +addr:((\d+\.){3}\d+)\s+/ and $1 ne "127.0.0.1") { $ip = $1; break; } } print "$ip\n"; ' )
+ip=$(/sbin/ip addr show | grep 'inet ' | grep -v 127.0.0 | awk '{ print $2}' | cut -d/ -f1)
 cat > $hostsfile <<HOSTS
 #This file is automatically genreated on boot; updated at $(date)
 127.0.0.1 localhost.localdomain localhost
@@ -141,7 +145,7 @@ cat /tmp/configs/limits.conf.add >> /etc/security/limits.conf
 setup_ipaddress() {
 
 rm -rf /etc/udev/rules.d/70-persistent-net.rules
-sed -i '/HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth0
+sed -i '/HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-e*
 
 }
 
