@@ -21,6 +21,18 @@ amazon-ebs)
     sed -i "s/HOSTNAME=.*/HOSTNAME=gpdb-sandbox.localdomain/g" /etc/sysconfig/network
     mkdir -p /gpdata/master
     chown -R gpadmin:gpadmin /gpdata
+    sudo tee /etc/yum.repos.d/docker.repo <<-'EOF'
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/$releasever/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
+    /usr/bin/yum -y install docker-engine
+    systemctl enable docker.service
+    systemctl start docker.service
+    /usr/sbin/groupadd docker
    ;;
 
 virtualbox-iso|virtualbox-ovf)
