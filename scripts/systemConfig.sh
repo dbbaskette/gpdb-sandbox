@@ -148,33 +148,34 @@ sed -i '/HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth0
 setup_hostname() {
 
 cat >> /etc/rc.d/rc.local <<EOF
-ip=\$(/sbin/ifconfig | perl -e 'while (<>) { if (/inet +addr:((\d+\.){3}\d+)\s+/ and \$1 ne "127.0.0.1") { \$ip = \$1; break; } } print "\$ip\n"; ' )
-fqdn="$SANDBOX.localdomain"
-shortname=\$(echo "\$fqdn" | cut -d "." -f1)
-hostsfile=/etc/hosts
+if [ ! -f "/home/gpadmin/.skipSetup" ]; then
+  ip=\$(/sbin/ifconfig | perl -e 'while (<>) { if (/inet +addr:((\d+\.){3}\d+)\s+/ and \$1 ne "127.0.0.1") { \$ip = \$1; break; } } print "\$ip\n"; ' )
+  fqdn="$SANDBOX.localdomain"
+  shortname=\$(echo "\$fqdn" | cut -d "." -f1)
+  hostsfile=/etc/hosts
 
-cat > "\$hostsfile" <<HOSTS
-#This file is automatically genreated on boot; updated at \$(date)
-127.0.0.1 localhost.localdomain localhost
+  cat > "\$hostsfile" <<HOSTS
+  #This file is automatically genreated on boot; updated at \$(date)
+  127.0.0.1 localhost.localdomain localhost
 
-\$ip \$fqdn \$shortname
-HOSTS
+  \$ip \$fqdn \$shortname
+  HOSTS
 
-# FIX NETWORKING FILE HOSTNAME
-sed -i "s/HOSTNAME=.*/HOSTNAME=gpdb-sandbox.localdomain/g" /etc/sysconfig/network
+  # FIX NETWORKING FILE HOSTNAME
+  sed -i "s/HOSTNAME=.*/HOSTNAME=gpdb-sandbox.localdomain/g" /etc/sysconfig/network
 
-# SET HOSTNAME
-hostname gpdb-sandbox.localdomain
+  # SET HOSTNAME
+  hostname gpdb-sandbox.localdomain
 
-# FIX IP LINE
-sed -i "/IP:/d" /etc/issue
-sed -i "13i IP: \$ip" /etc/issue
+  # FIX IP LINE
+  sed -i "/IP:/d" /etc/issue
+  sed -i "13i IP: \$ip" /etc/issue
 
-# ADD APPROPRIATE LOCAL IP TO PG_HBA.CONF
-# 	DELETE CURRENT LINE THEN ADD NEW ONE
-sed -i "/192.168/d" /gpdata/master/gpseg-1/pg_hba.conf
-sed -i "86i host all gpadmin \$ip/32 trust" /gpdata/master/gpseg-1/pg_hba.conf
-
+  # ADD APPROPRIATE LOCAL IP TO PG_HBA.CONF
+  # 	DELETE CURRENT LINE THEN ADD NEW ONE
+  sed -i "/192.168/d" /gpdata/master/gpseg-1/pg_hba.conf
+  sed -i "86i host all gpadmin \$ip/32 trust" /gpdata/master/gpseg-1/pg_hba.conf
+fi
 EOF
 
 }
