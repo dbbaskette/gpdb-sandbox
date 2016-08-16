@@ -141,7 +141,7 @@ cat /tmp/configs/limits.conf.add >> /etc/security/limits.conf
 setup_ipaddress() {
 
 rm -rf /etc/udev/rules.d/70-persistent-net.rules
-sed -i '/HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth0
+sed -i '/HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth*
 
 }
 
