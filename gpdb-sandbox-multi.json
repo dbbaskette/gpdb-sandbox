@@ -5,7 +5,8 @@
 	"iso_checksum": "51f90e8ddd2ea199780065eaf75130ad",
 	"headless": "false",
 	"vm_basename":"PivotalGPDB-Sandbox",
-	"gpversion":"4.3.8.0"
+	"gpversion":"4.3.9.0",
+        "gpbuildstamp":"20160816a"
 
 },
 "builders": [
@@ -17,15 +18,15 @@
 	"instance_type": "m4.xlarge",
 	"ssh_username": "gpadmin",
 	"ssh_pty": "true",
-	"ami_name": "gpdb-cloud-sandbox {{user `gpversion`}}-{{build_name}}",
-	"ami_description": "gpdb-cloud-sandbox {{user `gpversion`}}-{{build_name}} {{timestamp}}",
+	"ami_name": "gpdb-cloud-sandbox {{user `gpversion`}}-{{build_name}}-{{user `gpbuildstamp`}}",
+	"ami_description": "gpdb-cloud-sandbox {{user `gpversion`}}-{{build_name}} {{user `gpbuildstamp`}}",
         "force_deregister": "true",
 	"enhanced_networking": "true"
 },
 {
 	"name": "vmware",
 	"type": "vmware-iso",
-	"vm_name": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}",
+	"vm_name": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}-{{user `gpbuildstamp`}}",
 	"disk_size": 20480,
 	"vmx_data": {
 		"cpuid.coresPerSocket": "1",
@@ -33,7 +34,7 @@
 		"numvcpus": "2"
 	},
 	"headless": "{{user `headless`}}",
-	"output_directory": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}", 
+	"output_directory": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}-{{user `gpbuildstamp`}}", 
 	"guest_os_type": "centos-64",
 	"iso_url": "{{user `iso_url`}}",
 	"iso_checksum": "{{user `iso_checksum`}}",
@@ -53,7 +54,7 @@
 {	
 	"name": "vbox",
 	"type": "virtualbox-iso",
-	"vm_name": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}", 
+	"vm_name": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}-{{user `gpbuildstamp`}}", 
 	"disk_size": 20480,
 	"vboxmanage": [
 		[ "modifyvm", "{{.Name}}", "--memory", "8192" ],
@@ -65,7 +66,7 @@
                 [ "modifyvm", "{{.Name}}", "--natpf1", "gpcc,tcp,,28080,,28080" ]
 	],
 	"headless": "{{user `headless`}}",
-	"output_directory": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}", 
+	"output_directory": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}-{{user `gpbuildstamp`}}", 
 	"guest_os_type": "RedHat_64",
 	"iso_url": "{{user `iso_url`}}",
 	"iso_checksum": "{{user `iso_checksum`}}",
@@ -144,7 +145,7 @@
 
 {
   "type": "compress",
-  "output": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}.zip",
+  "output": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}-{{user `gpbuildstamp`}}.zip",
   "compression_level": 9,
   "keep_input_artifact":true,
   "only": ["vmware"]
