@@ -1,5 +1,5 @@
 ######################
-# HAWQ CONFIG PARAMS #
+# GPDB CONFIG PARAMS #
 ######################
 
 kernel.shmmax = 1000000000
