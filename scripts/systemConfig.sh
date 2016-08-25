@@ -159,7 +159,7 @@ if [ ! -f "/home/gpadmin/.skipSetup" ]; then
   127.0.0.1 localhost.localdomain localhost
 
   \$ip \$fqdn \$shortname
-  HOSTS
+HOSTS
 
   # FIX NETWORKING FILE HOSTNAME
   sed -i "s/HOSTNAME=.*/HOSTNAME=gpdb-sandbox.localdomain/g" /etc/sysconfig/network
