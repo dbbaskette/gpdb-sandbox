@@ -5,8 +5,8 @@
 	"iso_checksum": "51f90e8ddd2ea199780065eaf75130ad",
 	"headless": "false",
 	"vm_basename":"PivotalGPDB-Sandbox",
-	"gpversion":"4.3.9.0",
-        "gpbuildstamp":"20160816a"
+	"gpversion":"4.3.9.1",
+        "gpbuildstamp":"20160826a"
 
 },
 "builders": [
@@ -21,7 +21,9 @@
 	"ami_name": "gpdb-cloud-sandbox {{user `gpversion`}}-{{build_name}}-{{user `gpbuildstamp`}}",
 	"ami_description": "gpdb-cloud-sandbox {{user `gpversion`}}-{{build_name}} {{user `gpbuildstamp`}}",
         "force_deregister": "true",
-	"enhanced_networking": "true"
+	"enhanced_networking": "true",
+        "ami_regions": ["us-west-1","us-west-2"],
+        "ami_groups": ["all"]
 },
 {
 	"name": "vmware",

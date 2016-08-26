@@ -11,6 +11,10 @@ install_gpcc(){
  #echo "host all all 0.0.0.0/0 trust" >> /gpdata/master/gpseg-1/pg_hba.conf
  #echo "host all all 0.0.0.0/0 trust" >> /gpdata/segments/gpseg0/pg_hba.conf
  #gpstop -a -u
+
+ ### ARGH more prompts need removal to automate
+ sed -i 's/beta_port = auto_install/#beta_port = auto_install/' /usr/local/greenplum-cc-web/bin/gpcmdr.py
+
  gpperfmon_install --enable --password pivotal --port 5432
  gpstop -a -r
  gpcmdr --setup --config_file /tmp/configs/gpcmdr.conf
