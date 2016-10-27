@@ -40,7 +40,7 @@ install_pgcrypto(){
  gppkg -i $PGCRYPTO_FILE 
  psql -d template1 -f $GPHOME/share/postgresql/contrib/pgcrypto.sql 
  psql -d gpadmin -f $GPHOME/share/postgresql/contrib/pgcrypto.sql 
- echo "source /home/gpadmin/gp-wlm/gp-wlm_path.sh" >> /home/gpadmin/.bashrc
+ #echo "source /home/gpadmin/gp-wlm/gp-wlm_path.sh" >> /home/gpadmin/.bashrc
 }
 
 
