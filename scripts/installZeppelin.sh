@@ -6,10 +6,11 @@ source /tmp/release.properties
 
 install_zeppelin(){
 
-cp /tmp/bins/$ZEPPELIN_VERSION.tar.gz /usr/local
+sudo cp /tmp/bins/$ZEPPELIN_VERSION.tar.gz /usr/local
 cd /usr/local
-tar xvfz $ZEPPELIN_VERSION.tar.gz
-rm -f $ZEPPELIN_VERSION.tar.gz
+sudo tar xvfz $ZEPPELIN_VERSION.tar.gz
+sudo rm -f $ZEPPELIN_VERSION.tar.gz
+sudo ln -s /usr/local/$ZEPPELIN_VERSION /usr/local/zeppelin
 
 #cat >> /etc/rc.d/rc.local <<EOF
 #/usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
