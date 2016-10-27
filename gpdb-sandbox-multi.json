@@ -5,8 +5,8 @@
 	"iso_checksum": "51f90e8ddd2ea199780065eaf75130ad",
 	"headless": "false",
 	"vm_basename":"PivotalGPDB-Sandbox",
-	"gpversion":"4.3.9.1",
-        "gpbuildstamp":"20160826a"
+	"gpversion":"4.3.10.0",
+        "gpbuildstamp":"20161024"
 
 },
 "builders": [
@@ -22,8 +22,15 @@
 	"ami_description": "gpdb-cloud-sandbox {{user `gpversion`}}-{{build_name}} {{user `gpbuildstamp`}}",
         "force_deregister": "true",
 	"enhanced_networking": "true",
-        "ami_regions": ["us-west-1","us-west-2"],
+        "ami_regions": ["us-west-1","us-west-2","us-east-2"],
         "ami_groups": ["all"]
+},
+{
+	"name": "docker",
+	"type": "docker",
+	"image": "boogabee/gpdbsandboxbase:latest",
+        "run_command": [ "--privileged", "-u=gpadmin", "--cap-add=ALL", "-d", "-i", "-t", "{{.Image}}", "/bin/bash" ],
+        "commit": "true"
 },
 {
 	"name": "vmware",
@@ -126,6 +133,7 @@
 },
 {
 	"type": "shell",
+	"execute_command": "echo 'pivotal' | {{ .Vars }} sudo -E -u gpadmin -S sh '{{ .Path }}'",
 	"scripts": [
 		"scripts/installGPDB.sh",
 		"scripts/installExtensions.sh",
@@ -134,7 +142,7 @@
 },
 {
 	"type": "shell",
-	"execute_command": "echo 'pivotal' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+	"execute_command": "echo 'pivotal' | {{ .Vars }} sudo -E -u gpadmin -S sh '{{ .Path }}'",
 	"environment_vars": "BUILD_NAME={{build_name}}",
 	"scripts": [
 		"scripts/configureGPDB.sh",
@@ -143,15 +151,34 @@
 	]
 }
 ],
-  "post-processors": [
-
-{
-  "type": "compress",
-  "output": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}-{{user `gpbuildstamp`}}.zip",
-  "compression_level": 9,
-  "keep_input_artifact":true,
-  "only": ["vmware"]
-}
+"post-processors": [
+  {
+    "type": "compress",
+    "output": "{{user `vm_basename`}}-{{user `gpversion`}}-{{build_name}}-{{user `gpbuildstamp`}}.zip",
+    "compression_level": 9,
+    "keep_input_artifact":true,
+    "only": ["vmware","vbox"]
+  },
+  [ 
+    {
+      "type": "docker-tag",
+      "repository": "boogabee/gpdbsandboxtest",
+      "tag": "latest",
+      "only": ["docker"]
+     },
+     {
+       "type": "docker-dockerfile",
+       "expose": [5432,22],
+       "cmd": ["/home/gpadmin/run.sh"],
+       "volume": "/gpdata",
+       "env": 
+         {
+         "USER": "gpadmin",
+         "LOGNAME": "gpadmin"
+         },
+       "only": ["docker"]
+      }
+    ]
   ]
 
 }
