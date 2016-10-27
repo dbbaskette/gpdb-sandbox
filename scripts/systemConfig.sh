@@ -81,7 +81,6 @@ install_binaries(){
 source /tmp/release.properties
 yum -y install unzip
 
-
 unzip  /tmp/bins/$GPDB_VERSION.zip -d /tmp/bins/
 unzip  /tmp/bins/$GPCC_VERSION.zip -d /tmp/bins/
 
@@ -99,7 +98,6 @@ sed -i '/defaultInstallPath=/a installPath=${defaultInstallPath}' /tmp/bins/$GPC
 /tmp/bins/$GPCC_VERSION.bin
 
 chown -R gpadmin: /usr/local/greenplum*
-
 }
 
 setup_data_path(){
@@ -215,6 +213,34 @@ EOF
 
 elif [[ $BUILD_NAME = "virtualbox" ]];then
 echo "BUILDING ISSUE for VBOX"
+cat > /etc/issue  << EOF
+                                     ##
+  ###                                 #                  ####  ####
+ #    ## ##  ###   ###  ####   ###    #   # #  #####      # #   # #
+## #   ## # ##### #####  # ##  # ##   #   # #  # # ##    #  #  ###
+## #   #    ##    ##     # #   # #   ##   # #  # # #     # ##  # ##
+ ###  ###    ###   ###  ## ##  ##   ####  #### # # #    ####  ####
+                              ###
+-----------------------------------------------------------------------------
+Welcome to the Pivotal Greenplum DB - Data Science Sandbox with Apache MADLIB
+         Version:$GPDB_VERSION_NUMBER  - vbox edition (with PGCRYPTO)
+-----------------------------------------------------------------------------
+Hostname: \n
+Remote SSH:  "ssh gpadmin@localhost -p 2200"
+Username: root
+Password: pivotal
+GPDB Admin: gpadmin
+GPDB Password: pivotal
+Tutorial User:  gpuser     Tutorial User Password: pivotal
+-----------------------------------------------------------------------------
+                To Start Database, Command Center, and Apache Zeppelin
+-----------------------------------------------------------------------------
+1)  Login as gpadmin
+2)  Type: ./start_all.sh
+-----------------------------------------------------------------------------
+EOF
+elif [[ $BUILD_NAME = "docker" ]];then
+echo "BUILDING ISSUE for DOCKER"
 cat > /etc/issue  << EOF
                                      ##
   ###                                 #                  ####  ####
