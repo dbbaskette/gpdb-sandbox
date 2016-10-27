@@ -13,7 +13,7 @@ amazon-ebs)
     /usr/sbin/groupadd gpadmin
     /usr/sbin/useradd gpadmin -g gpadmin -G wheel
     /usr/sbin/useradd gpuser -g gpadmin -G wheel
-    echo "pivotal"|passwd --stdin gpuser
+    echo "pivotal"| passwd --stdin gpuser
     echo "gpuser        ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
     echo "gpdb-sandbox.localdomain" > /etc/hostname
     hostname gpdb-sandbox.localdomain
@@ -21,6 +21,31 @@ amazon-ebs)
     sed -i "s/HOSTNAME=.*/HOSTNAME=gpdb-sandbox.localdomain/g" /etc/sysconfig/network
     mkdir -p /gpdata/master
     chown -R gpadmin:gpadmin /gpdata
+    chown gpadmin /usr/local
+   ;;
+
+docker)
+    echo "==> Performing Docker items that are normally done in kickstart"
+    echo "==> most of this prepared in boogabee/gpdbsandboxbase:latest"
+    echo "gpdb-sandbox.localdomain" > /etc/hostname
+    hostname gpdb-sandbox.localdomain
+    service sshd start
+    echo "host all all 0.0.0.0/0 md5" >> /gpdata/master/gpseg-1/pg_hba.conf
+    echo "MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1" >> /home/gpadmin/.bashrc
+    echo "source /usr/local/greenplum-db/greenplum_path.sh" >> /home/gpadmin/.bashrc
+
+cat > /home/gpadmin/run.sh << EOF
+#!/bin/bash
+
+sudo service sshd start
+export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
+source /home/gpadmin/.bash_profile
+source /usr/local/greenplum-db/greenplum_path.sh
+gpstart -a
+psql -d template1 -c "alter user gpadmin password 'pivotal'"
+EOF
+
+   chmod oug+x /home/gpadmin/run.sh
    ;;
 
 virtualbox-iso|virtualbox-ovf)
