@@ -15,7 +15,7 @@ install_gpdb(){
  #gpstop -M smart
 }
 tutorial_repo(){
-        git clone --depth=1 https://github.com/Pivotal-Open-Source-Hub/gpdb-sandbox-tutorials.git
+        git clone --depth=1 https://github.com/Pivotal-Open-Source-Hub/gpdb-sandbox-tutorials.git /home/gpadmin/gpdb-sandbox-tutorials
 }
 
 
