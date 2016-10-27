@@ -39,7 +39,7 @@ echo "* Starting Greenplum Database..."
 ip=\$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print \$1}')
 source /usr/local/greenplum-db/greenplum_path.sh
 source /usr/local/greenplum-cc-web/gpcc_path.sh
-source /home/gpadmin/gp-wlm/gp-wlm_path.sh
+#source /home/gpadmin/gp-wlm/gp-wlm_path.sh
 export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
 gpstart -a
 echo "* Greenplum Database Started."
@@ -48,7 +48,7 @@ gpcmdr --start
 svc-mgr.sh --action=cluster-start --service=all
 echo "* Greenplum Command Center Started."
 echo "* Starting Apache Zeppelin Server...."
-sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
+sudo /usr/local/zeppelin/bin/zeppelin-daemon.sh start
 echo "* Apache Zeppelin Server Started."
 echo "*********************************************************************************"
 echo "* Updating Tutorial Files..."
@@ -76,7 +76,7 @@ echo "**************************************************************************
 echo "* Starting Greenplum Database..."
 source /usr/local/greenplum-db/greenplum_path.sh
 source /usr/local/greenplum-cc-web/gpcc_path.sh
-source /home/gpadmin/gp-wlm/gp-wlm_path.sh
+#source /home/gpadmin/gp-wlm/gp-wlm_path.sh
 export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
 gpstart -a
 echo "* Greenplum Database Started."
@@ -84,7 +84,7 @@ echo "* Starting Greenplum Command Center..."
 gpcmdr --start
 echo "* Greenplum Command Center Started."
 echo "* Starting Apache Zeppelin Server...."
-sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
+sudo /usr/local/zeppelin/bin/zeppelin-daemon.sh start
 echo "* Apache Zeppelin Server Started."
 echo "*********************************************************************************"
 echo "* Updating Tutorial Files..."
@@ -112,7 +112,7 @@ echo "**************************************************************************
 echo "* Starting Greenplum Database..."
 source /usr/local/greenplum-db/greenplum_path.sh
 source /usr/local/greenplum-cc-web/gpcc_path.sh
-source /home/gpadmin/gp-wlm/gp-wlm_path.sh
+#source /home/gpadmin/gp-wlm/gp-wlm_path.sh
 export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
 gpstart -a
 echo "* Greenplum Database Started."
@@ -120,7 +120,7 @@ echo "* Starting Greenplum Command Center..."
 gpcmdr --start
 echo "* Greenplum Command Center Started."
 echo "* Starting Apache Zeppelin Server...."
-sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh start
+sudo /usr/local/zeppelin/bin/zeppelin-daemon.sh start
 echo "* Apache Zeppelin Server Started."
 echo "*********************************************************************************"
 echo "* Updating Tutorial Files..."
@@ -156,7 +156,7 @@ echo "* Stoppin Greenplum Command Center..."
 gpcmdr --stop
 echo "* Greenplum Command Center Stopped."
 echo "* Stopping Apache Zeppelin Server...."
-sudo /usr/local/$ZEPPELIN_VERSION/bin/zeppelin-daemon.sh stop
+sudo /usr/local/zeppelin/bin/zeppelin-daemon.sh stop
 echo "* Apache Zepeelin Server Stopped."
 echo "********************************************************************************************"
 echo " ALL DATABASE RELATED SERVICES STOPPED.    RUN ./start_all.sh to restart"
