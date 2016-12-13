@@ -15,6 +15,7 @@ install_madlib(){
  cd /tmp/bins
  tar xvfz $MADLIB_FILE 
  gppkg -i $MADLIB_VERSION.gppkg
+ fix_madpack.sh
  $GPHOME/madlib/bin/madpack install -s madlib -p greenplum -c gpadmin@$SANDBOX.localdomain:5432/template1
  $GPHOME/madlib/bin/madpack install -s madlib -p greenplum -c gpadmin@$SANDBOX.localdomain:5432/gpadmin
  echo "INSTALL PL Extensions"
