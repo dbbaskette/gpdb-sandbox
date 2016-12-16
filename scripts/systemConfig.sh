@@ -21,6 +21,13 @@ do
                                 echo "GPCC_FILE=$gpcc" >> /tmp/release.properties
                                 echo "GPCC_VERSION=$shortname" >> /tmp/release.properties
                                 ;;
+                *greenplum-text*) gptext=$justfile
+				strip_ext $justfile
+                                echo "GPTEXT_FILE=$gptext" >> /tmp/release.properties
+                                echo "GPTEXT_VERSION=$shortname" >> /tmp/release.properties
+				gptextnum=${gptext:15}
+				echo "GPTEXT_VERSION_NUMBER=${gptextnum%%-*}" >>/tmp/release.properties 
+                                ;;
 
                 *madlib*)       madlib=$justfile
 				strip_ext $justfile
@@ -83,21 +90,33 @@ yum -y install unzip
 
 unzip  /tmp/bins/$GPDB_VERSION.zip -d /tmp/bins/
 unzip  /tmp/bins/$GPCC_VERSION.zip -d /tmp/bins/
+tar -C /tmp/bins/ -zxvf /tmp/bins/$GPTEXT_VERSION.tar.gz 
 
-sed -i 's/more <</cat <</g' /tmp/bins/$GPDB_VERSION.bin
+sed -i 's/more <</cat > \/tmp\/gpdb.lic <</g' /tmp/bins/$GPDB_VERSION.bin
 sed -i 's/agreed=/agreed=1/' /tmp/bins/$GPDB_VERSION.bin
 sed -i 's/pathVerification=/pathVerification=1/' /tmp/bins/$GPDB_VERSION.bin
 sed -i '/defaultInstallPath=/a installPath=${defaultInstallPath}' /tmp/bins/$GPDB_VERSION.bin
 
-sed -i 's/more <</cat <</g' /tmp/bins/$GPCC_VERSION.bin
+sed -i 's/more <</cat > \/tmp\/gpcc.lic <</g' /tmp/bins/$GPCC_VERSION.bin
 sed -i 's/agreed=/agreed=1/' /tmp/bins/$GPCC_VERSION.bin
 sed -i 's/pathVerification=/pathVerification=1/' /tmp/bins/$GPCC_VERSION.bin
 sed -i '/defaultInstallPath=/a installPath=${defaultInstallPath}' /tmp/bins/$GPCC_VERSION.bin
 
+sed -i 's/more <</cat > \/tmp\/gptext.lic <</g' /tmp/bins/$GPTEXT_VERSION.bin
+sed -i 's/AGREE=$/AGREE=1/g' /tmp/bins/$GPTEXT_VERSION.bin
+sed -i 's/read REPLY LEFTOVER/REPLY=y/g' /tmp/bins/$GPTEXT_VERSION.bin
+sed -i "s/read INSTALL_LOC LEFTOVER/INSTALL_LOC=\/usr\/local\/greenplum-text-$GPTEXT_VERSION_NUMBER/g" /tmp/bins/$GPTEXT_VERSION.bin
+sed -i 's/pathVerification=/pathVerification=1/' /tmp/bins/$GPTEXT_VERSION.bin
+sed -i '/defaultInstallPath=/a installPath=${defaultInstallPath}' /tmp/bins/$GPTEXT_VERSION.bin
+
 /tmp/bins/$GPDB_VERSION.bin 
 /tmp/bins/$GPCC_VERSION.bin
 
-chown -R gpadmin: /usr/local/greenplum*
+echo "Creating Greenplum Text Directories: /usr/local/greenplum-text-$GPTEXT_VERSION_NUMBER"
+mkdir /usr/local/greenplum-text-$GPTEXT_VERSION_NUMBER
+ln -s /usr/local/greenplum-text-$GPTEXT_VERSION_NUMBER /usr/local/greenplum-text
+
+chown -R gpadmin /usr/local/greenplum*
 }
 
 setup_data_path(){
@@ -122,11 +141,29 @@ cat > $hostsfile <<HOSTS
 
 $ip $fqdn $shortname
 HOSTS
- echo $fqdn >> /usr/local/greenplum-db/hostsfile
- source /usr/local/greenplum-db/greenplum_path.sh
- sed -i "s/%HOSTNAME%/$fqdn/" /tmp/configs/gpinitsystem_singlenode
+
+echo $fqdn >> /usr/local/greenplum-db/hostsfile
+source /usr/local/greenplum-db/greenplum_path.sh
+sed -i "s/%HOSTNAME%/$fqdn/" /tmp/configs/gpinitsystem_singlenode
 }
 
+setup_gptext(){
+
+echo "==> Setting up gptext"
+cat >> /home/gpadmin/gptext_install_config <<EOF
+declare -a DATA_DIRECTORY=(/gpdata/primary /gpdata/primary)
+JAVA_OPTS="-Xms1024M -Xmx2048M"
+GPTEXT_PORT_BASE=18983
+GP_MAX_PORT_LIMIT=28983
+ZOO_CLUSTER="BINDING"
+declare -a ZOO_HOSTS=(gpdb-sandbox gpdb-sandbox gpdb-sandbox)
+ZOO_DATA_DIR="/gpdata/master/"
+ZOO_GPTXTNODE="gptext"
+ZOO_PORT_BASE=2188
+ZOO_MAX_PORT_LIMIT=12188
+EOF
+
+}
 
 setup_configs(){
 
@@ -301,8 +338,6 @@ fi
 
 }
 
-
-
 _main() {
 	get_versions
 	setup_hostname
@@ -311,6 +346,7 @@ _main() {
 	setup_data_path
 	setup_configs
         setup_gpdb
+        setup_gptext
 	setup_message
 }
 

@@ -44,7 +44,7 @@ export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
 gpstart -a
 echo "* Greenplum Database Started."
 echo "* Starting Greenplum Command Center..."
-gpcmdr --start
+gpcmdr --start gpdb_sandbox
 svc-mgr.sh --action=cluster-start --service=all
 echo "* Greenplum Command Center Started."
 echo "* Starting Apache Zeppelin Server...."
@@ -81,7 +81,7 @@ export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
 gpstart -a
 echo "* Greenplum Database Started."
 echo "* Starting Greenplum Command Center..."
-gpcmdr --start
+gpcmdr --start gpdb_sandbox
 echo "* Greenplum Command Center Started."
 echo "* Starting Apache Zeppelin Server...."
 sudo /usr/local/zeppelin/bin/zeppelin-daemon.sh start
@@ -117,7 +117,7 @@ export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
 gpstart -a
 echo "* Greenplum Database Started."
 echo "* Starting Greenplum Command Center..."
-gpcmdr --start
+gpcmdr --start gpdb_sandbox
 echo "* Greenplum Command Center Started."
 echo "* Starting Apache Zeppelin Server...."
 sudo /usr/local/zeppelin/bin/zeppelin-daemon.sh start
@@ -153,7 +153,7 @@ export MASTER_DATA_DIRECTORY=/gpdata/master/gpseg-1
 gpstop -M immediate -a
 echo "* Greenplum Database Stopped."
 echo "* Stoppin Greenplum Command Center..."
-gpcmdr --stop
+gpcmdr --stop gpdb_sandbox
 echo "* Greenplum Command Center Stopped."
 echo "* Stopping Apache Zeppelin Server...."
 sudo /usr/local/zeppelin/bin/zeppelin-daemon.sh stop
@@ -182,6 +182,6 @@ rm -rf /tmp/configs
 
 # Defragment the blocks or else the generated VM image will still be huge
 if [[ $BUILD_NAME = "vbox" || $BUILD_NAME = "vmware" ]]; then
-dd if=/dev/zero of=/bigemptyfile bs=4096k
-rm -rf /bigemptyfile
+dd if=/dev/zero of=/tmp/bigemptyfile bs=4096k
+rm -rf /tmp/bigemptyfile
 fi

@@ -9,7 +9,7 @@ amazon-ebs)
     /etc/init.d/iptables stop
     setenforce 0
     sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux 
-    /usr/bin/yum -y install kernel-headers kernel-devel gcc make perl curl wget git java-1.7.0-openjdk java-1.7.0-openjdk-devel unzip sudo epel-releases ed sed ntpd
+    /usr/bin/yum -y install kernel-headers kernel-devel gcc make perl curl wget git java-1.8.0-openjdk java-1.8.0-openjdk-devel unzip sudo epel-releases ed sed ntpd nc lsof patch
     /usr/sbin/groupadd gpadmin
     /usr/sbin/useradd gpadmin -g gpadmin -G wheel
     /usr/sbin/useradd gpuser -g gpadmin -G wheel

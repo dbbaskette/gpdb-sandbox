@@ -5,8 +5,8 @@
 	"iso_checksum": "51f90e8ddd2ea199780065eaf75130ad",
 	"headless": "false",
 	"vm_basename":"PivotalGPDB-Sandbox",
-	"gpversion":"4.3.10.0",
-        "gpbuildstamp":"20161024"
+	"gpversion":"4.3.11.0",
+        "gpbuildstamp":"20161214"
 
 },
 "builders": [
@@ -22,7 +22,7 @@
 	"ami_description": "gpdb-cloud-sandbox {{user `gpversion`}}-{{build_name}} {{user `gpbuildstamp`}}",
         "force_deregister": "true",
 	"enhanced_networking": "true",
-        "ami_regions": ["us-west-1","us-west-2","us-east-2"],
+        "ami_regions": ["us-west-1","us-west-2"],
         "ami_groups": ["all"]
 },
 {
@@ -146,6 +146,7 @@
 	"environment_vars": "BUILD_NAME={{build_name}}",
 	"scripts": [
 		"scripts/configureGPDB.sh",
+		"scripts/configureGPTEXT.sh",
 		"scripts/installZeppelin.sh",
 		"scripts/cleanup.sh"
 	]
