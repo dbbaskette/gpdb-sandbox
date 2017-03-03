@@ -5,8 +5,8 @@
 	"iso_checksum": "51f90e8ddd2ea199780065eaf75130ad",
 	"headless": "false",
 	"vm_basename":"PivotalGPDB-Sandbox",
-	"gpversion":"4.3.11.0",
-        "gpbuildstamp":"20161214"
+	"gpversion":"4.3.12.0",
+        "gpbuildstamp":"20170302"
 
 },
 "builders": [
